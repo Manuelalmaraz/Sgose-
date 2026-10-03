@@ -1,0 +1,218 @@
+/* ESTILOS GENERALES Y FUENTE. */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif; /* FUENTE GLOBAL DEL PANEL */
+}
+
+/* COLOR DE FONDO. */
+body {
+    background: #f4f6f9;
+}
+
+/* MENÚ LATERAL FIJO. */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    position: fixed;
+    background: #173b6c;
+    color: white;
+    padding: 25px 20px;
+}
+
+/* ESPACIO DEBAJO DEL LOGO. */
+.sidebar h2 {
+    margin-bottom: 30px;
+}
+
+/* ENLACES DEL MENÚ. */
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+/* COLOR AL PASAR EL CURSOR. */
+.sidebar a:hover {
+    background: #245894;
+}
+
+/* ESPACIO PARA EL CONTENIDO PRINCIPAL. */
+.contenido {
+    margin-left: 220px;
+    padding: 30px;
+}
+
+/* SEPARACIÓN DEL ENCABEZADO. */
+.encabezado {
+    margin-bottom: 30px;
+}
+
+/* ESTILO DEL TÍTULO PRINCIPAL. */
+.encabezado h1 {
+    color: #173b6c;
+    margin-bottom: 5px;
+}
+
+/* COLOR DEL TEXTO DEL ENCABEZADO. */
+.encabezado p {
+    color: #666;
+}
+
+/* ORGANIZA LAS TARJETAS EN CUATRO COLUMNAS. */
+.tarjetas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* FONDO, BORDES Y SOMBRA DE CADA TARJETA. */
+.tarjeta {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* TÍTULO DE LA TARJETA. */
+.tarjeta h3 {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+/* NÚMERO DESTACADO DE LA TARJETA. */
+.tarjeta p {
+    font-size: 28px;
+    color: #173b6c;
+    font-weight: bold;
+}
+
+/* CONTENEDOR DE LA TABLA. */
+.tabla-contenedor {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* TÍTULO DE LA TABLA. */
+.tabla-contenedor h2 {
+    color: #173b6c;
+    margin-bottom: 20px;
+}
+
+/* TABLA DE ANCHO COMPLETO. */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* ESPACIO Y BORDES DE LAS CELDAS. */
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* COLORES DE LOS ENCABEZADOS. */
+th {
+    background: #f0f3f7;
+    color: #333;
+}
+
+/* FORMA DE LAS ETIQUETAS DE ESTADO. */
+.estado {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+/* COLORES DEL ESTADO PENDIENTE. */
+.pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* COLORES DEL ESTADO EN PROCESO. */
+.proceso {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* COLORES DEL ESTADO FINALIZADO. */
+.finalizada {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* ESTILO DE LOS BOTONES DE ACCIÓN. */
+.btn {
+    padding: 7px 12px;
+    background: #1769c2;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+/* DOS COLUMNAS EN PANTALLAS DE HASTA 900 PX. */
+@media (max-width: 900px) {
+    .tarjetas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+/* RESALTA LA OPCIÓN ACTUAL DEL MENÚ. */
+.activo {
+    background: #245894;
+}
+
+/* ORGANIZA LOS FILTROS EN UNA FILA. */
+.filtros {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+/* ESTILO DE LOS CAMPOS DE BÚSQUEDA. */
+.filtros input,
+.filtros select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* ANCHO DEL CAMPO DE TEXTO. */
+.filtros input {
+    width: 300px;
+}
+
+/* ESTILO DEL BOTÓN BUSCAR. */
+.filtros button {
+    padding: 10px 20px;
+    border: none;
+    background: #1769c2;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* COLOR DE BUSCAR AL PASAR EL CURSOR. */
+.filtros button:hover {
+    background: #1257a3;
+}
+
+/* COLOR DEL BOTÓN SECUNDARIO. */
+.btn.secundario {
+    background: #6c757d;
+}
+
+/* COLOR SECUNDARIO AL PASAR EL CURSOR. */
+.btn.secundario:hover {
+    background: #545b62;
+}

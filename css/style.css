@@ -1,0 +1,183 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* IRELLENO Y ANCHO DE BORDE */
+    font-family: "Segoe UI", georgia, Tahoma, sans-serif; /* FUENTE DE TEXTO */
+}
+
+/* FONDO DE LA PAGINA */
+body {
+    background: #f3f6fa;
+}
+
+/* CONETENEDOR PRINCIPAL PONER LA INFO DE LADO A LADO  */
+.login-container {
+    min-height: 100vh; /* ALTURA DE LA PANTALLA */
+    display: flex;
+}
+
+/* LA MITAD DEL FORMULARIO QUE ES BLANCA */
+.login-card {
+    width: 45%;
+    padding: 70px;
+    background: white;
+
+    display: flex;
+    flex-direction: column; /* PONE LOS ELEMENTOS EN COLUMNA */
+    justify-content: center; /* CENTRADO DE FORMA VERTICAL */
+}
+
+/* ES LA ALINEACION DEL ICCONO Y NOMBRE  */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 45px;
+}
+
+/* TAMAÑO DEL LOGO DEL RAYO */
+.icono {
+    font-size: 55px;
+}
+
+/* DA EL TAMAÑO Y COLOR DE NOMBRE EN EL LOGO */
+.logo h1 {
+    color: #173b6c;
+    font-size: 36px;
+}
+
+/* DESCRIPCION PEQUEÑA DEL SISTEMA */
+.logo p {
+    color: #667085;
+    margin-top: 5px;
+    line-height: 1.4; /* INTERNILENEADO */
+}
+
+/* ESTILO DEL TITULO DENTRO DEL BOTON"Iniciar sesión". */
+.login-card h2 {
+    color: #162a56;
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+/* ESTILO DEL TEXTO "ingresa tus crednciales para acceder al sistema" */
+.descripcion {
+    color: #6b7280;
+    margin-bottom: 30px;
+}
+
+/* ESPACIO ENTRE CAMPOS DE CREDENCIALES */
+.campo {
+    margin-bottom: 20px;
+}
+
+/* MUESTRA TEXTO SOMBREADO SOBRE EL INPUT */
+.campo label {
+    display: block;
+    margin-bottom: 8px;
+    color: #344054;
+}
+
+/* LOS IMNPUT DE CORREO Y CONTRASELA, ANCHO,ESPACIO DE DENTRO Y EL BORDE REDONDO */
+.campo input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+/* AL INGRESAR UN CAMPO EL CONTORNO DEL CUADRO CAMBIA DE COLOR */
+.campo input:focus {
+    outline: none;
+    border-color: #1769c2;
+}
+
+/* BOTON DE INICIO DE SESION PARA COMPROVAR LAS CREDENCIALES */
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+
+    background: #1769c2;
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer; /* CAMBIA DE PUNTELO A UNA MANITA. */
+}
+
+/* OSCURECE EL BOTON */
+button:hover {
+    background: #1257a3;
+}
+
+/* AVISO QUE ABAJO DE FORMULARIO ALINEACION  */
+.pie {
+    text-align: center;
+    margin-top: 25px;
+    color: #667085;
+}
+
+/* PANEL INFORMATIVO PARA COLOCAR INFORMACION DE LA EMPRESA */
+.login-info {
+    width: 55%;
+
+    /* DESGRADIENTE SOBRE LA IMAGEN DEL LADO DERECHO FONDO AZUL */
+    background:
+        linear-gradient(
+            rgba(12, 55, 100, 0.88),
+            rgba(12, 55, 100, 0.88)
+        ),
+        url("../img/electricidad.jpg");
+
+    background-size: cover; /* USAR TODO EL PANEL */
+    background-position: center; /* ALINEACION DE LA IMAGEN EN EL CENTRO  */
+
+    color: white;
+
+    display: flex;
+    align-items: center; /* ALINEACION DE CONTENIDO VERTICALMENTE  */
+    justify-content: center; /* ALINEACION DEL CONTENIDO CENTRADO Y HORIZONTALEMENTE  */
+
+    padding: 60px;
+}
+
+/* TITULO DEL PANEL DE INFORMACION FONDO AZUL, PARA QUE NO SEA MUY LARGO  */
+.login-info h2 {
+    font-size: 38px;
+    max-width: 450px;
+}
+
+/* INTERNLINEADO DE TEXTO DE PANEL DE INFORMACION */
+.login-info p {
+    margin-top: 20px;
+    font-size: 18px;
+    max-width: 450px;
+    line-height: 1.6;
+}
+
+/* LIMITA EL ANCHO DEL FORMULARIO EN PANTALLAS PEQUEÑAS */
+@media (max-width: 800px) {
+
+    /* DEJA COLOCAR LOS PANELS LADO A LADO. */
+    .login-container {
+        display: block;
+    }
+
+    /* ANCHO DEL FORMULARIO OCUPA TODO EL ANCHO Y AL MENOS LA ALTURA DE LA PANTALLA. */
+    .login-card {
+        width: 100%;
+        min-height: 100vh;
+        padding: 40px;
+    }
+
+    /* ESCONDE EL PANEL DE INFORMACION PARA DAR ESPACIO AL FORMULARIO. */
+    .login-info {
+        display: none;
+    }
+
+}
