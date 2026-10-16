@@ -1,78 +1,100 @@
 <?php
-
-// RECUPERA LA SESIÓN.
+// INICIA LA SESIÓN Y VALIDA EL ACCESO DEL ADMINISTRADOR.
 session_start();
 
-// EXIGE INICIAR SESIÓN.
 if (!isset($_SESSION["id_usuario"])) {
     header("Location: ../index.php");
     exit;
 }
 
-// SOLO PERMITE EL ACCESO AL ADMINISTRADOR.
 if ($_SESSION["id_rol"] != 1) {
     header("Location: ../tecnico/dashboard.php");
     exit;
 }
-
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
-    <!-- PERMITE TILDES Y CARACTERES ESPECIALES. -->
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- TÍTULO DE LA PESTAÑA. -->
     <title>SGOSE - Administrador</title>
-    <link rel="stylesheet" href="../css/style.css">
 
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>
 
-   
-    <h1>SGOSE</h1>
+<!-- MENÚ LATERAL DE ADMINISTRACIÓN -->
+<div class="sidebar">
 
-    <!-- MUESTRA EL NOMBRE SIN INTERPRETARLO COMO HTML. -->
-    <h2>
-        Bienvenido, <?php echo htmlspecialchars($_SESSION["nombre"]); ?>
-    </h2>
+    <h2>⚡ SGOSE</h2>
 
-    <!-- MENSAJE QUE MUESTRA EL ROL DEL USUARIO. -->
-    <p>Rol: Administrador</p>
+    <a href="dashboard.php" class="activo">Dashboard</a>
+    <a href="clientes.php">Clientes</a>
+    <a href="ordenes.php">Órdenes</a>
+    <a href="usuarios.php">Usuarios</a>
+    <a href="historial.php">Historial</a>
 
-    <hr>
-
-    <!-- OPCIONES DEL MENÚ QUE VERA EL ADMIN -->
-    <h3>Menú principal</h3>
-
-    <ul>
-        <li>Dashboard</li>
-        <li>Clientes</li>
-        <li>Órdenes de servicio</li>
-        <li>Usuarios</li>
-        <li>Historial</li>
-    </ul>
-
-    <hr>
-
-    <!-- RESUMEN DE ÓRDENES. -->
-    <h3>Resumen</h3>
-
-    <!-- VALORES FIJOS, AÚN SIN CONSULTAR LA BASE DE DATOS. -->
-    <p>Órdenes pendientes: 0</p>
-    <p>Órdenes en proceso: 0</p>
-    <p>Órdenes finalizadas: 0</p>
-
-    
-    <br>
-
-    <!-- ENLACE PARA CERRAR SESIÓN. -->
     <a href="../logout.php">Cerrar sesión</a>
 
-</body>
+</div>
 
+<div class="contenido">
+
+    <!-- BIENVENIDA AL ADMINISTRADOR -->
+    <div class="encabezado">
+
+        <div>
+            <h1>
+                Bienvenido,
+                <?php echo htmlspecialchars($_SESSION["nombre"]); ?>
+            </h1>
+
+            <p>Panel general del administrador</p>
+        </div>
+
+    </div>
+
+    <!-- RESUMEN DE ÓRDENES Y CLIENTES -->
+    <div class="tarjetas-dashboard">
+
+        <div class="tarjeta">
+            <h3>Órdenes pendientes</h3>
+            <p>5</p>
+        </div>
+
+        <div class="tarjeta">
+            <h3>En proceso</h3>
+            <p>3</p>
+        </div>
+
+        <div class="tarjeta">
+            <h3>Finalizadas</h3>
+            <p>8</p>
+        </div>
+
+        <div class="tarjeta">
+            <h3>Clientes</h3>
+            <p>12</p>
+        </div>
+
+    </div>
+
+    <!-- DESCRIPCIÓN GENERAL DEL SISTEMA -->
+    <div class="tabla-contenedor">
+
+        <h2>Resumen del sistema</h2>
+
+        <p>
+            Desde este panel puedes administrar clientes,
+            órdenes de servicio, usuarios e historial.
+        </p>
+
+    </div>
+
+</div>
+
+</body>
 </html>
