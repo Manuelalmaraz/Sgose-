@@ -217,3 +217,24 @@ th {
 .btn.secundario:hover {
     background: #545b62;
 }
+
+.detalle-orden {
+    margin-top: 20px;
+    display: grid;
+    gap: 20px;
+}
+
+.detalle-grupo {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.detalle-grupo h3 {
+    margin-bottom: 15px;
+}
+
+.detalle-grupo p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}

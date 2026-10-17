@@ -292,3 +292,42 @@ th {
     border-radius: 6px;
     margin-bottom: 20px;
 }
+
+/* BOTÓN PARA CREAR UN NUEVO REGISTRO */
+.btn-nuevo {
+    display: inline-block;
+    background-color: #1f6feb;
+    color: #ffffff;
+    padding: 10px 16px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+/* CAMBIA EL COLOR DEL BOTÓN NUEVO AL PASAR EL CURSOR */
+.btn-nuevo:hover {
+    background-color: #185abc;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* ESTILO DEL BOTÓN SECUNDARIO, USADO PARA ACCIONES ALTERNATIVAS */
+.btn-secundario {
+    display: inline-block;
+    background-color: #6c757d;
+    color: #ffffff;
+    padding: 9px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* RESALTA EL BOTÓN SECUNDARIO AL PASAR EL CURSOR */
+.btn-secundario:hover {
+    background-color: #5a6268;
+    color: #ffffff;
+    text-decoration: none;
+}

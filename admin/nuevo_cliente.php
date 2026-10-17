@@ -51,12 +51,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // REDIRIGE SI EL REGISTRO SE COMPLETA O MUESTRA UN ERROR.
         if ($stmt->execute()) {
-            header("Location: clientes.php");
+
+        $id_nuevo_cliente = $stmt->insert_id;
+
+     if (isset($_POST["desde"]) && $_POST["desde"] == "orden") {
+
+            header(
+                "Location: nueva_orden.php?id_cliente=" .
+                $id_nuevo_cliente
+            );
+
             exit;
-        } else {
-            $mensaje = "No se pudo registrar el cliente.";
+            }
+
+                header("Location: clientes.php?mensaje=creado");
+                exit;
+            }
         }
-    }
 }
 ?>
 
@@ -116,6 +127,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <?php } ?>
 
         <form method="POST">
+
+                <?php if (isset($_GET["desde"]) && $_GET["desde"] == "orden") { ?>
+                    <input type="hidden" name="desde" value="orden">
+                <?php } ?>
 
             <!-- CAMPO OBLIGATORIO: NOMBRE -->
             <div class="grupo-formulario">

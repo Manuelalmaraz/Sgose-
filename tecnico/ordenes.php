@@ -15,6 +15,49 @@ if ($_SESSION["id_rol"] != 2) {
     header("Location: ../admin/dashboard.php");
     exit;
 }
+
+require_once "../config/conexion.php";
+
+$id_tecnico = $_SESSION["id_usuario"];
+
+$sql = "SELECT
+            o.id_orden,
+            o.numero_orden,
+            o.tipo_solicitud,
+            o.servicio_solicitado,
+            o.fecha_programada,
+
+            c.nombre AS cliente_nombre,
+            c.apellido AS cliente_apellido,
+
+            cs.nombre_categoria,
+
+            e.nombre_estado
+
+        FROM orden_servicio o
+
+        INNER JOIN clientes c
+            ON o.id_cliente = c.id_cliente
+
+        INNER JOIN categorias_servicio cs
+            ON o.id_categoria = cs.id_categoria
+
+        INNER JOIN estados_orden e
+            ON o.id_estado = e.id_estado
+
+        WHERE o.id_tecnico = ?
+
+        ORDER BY o.id_orden DESC";
+
+$stmt = $conexion->prepare($sql);
+
+$stmt->bind_param("i", $id_tecnico);
+
+$stmt->execute();
+
+$resultado = $stmt->get_result();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -101,75 +144,82 @@ if ($_SESSION["id_rol"] != 2) {
                     </tr>
                 </thead>
 
-                <!-- ÓRDENES DE EJEMPLO CON DATOS FIJOS PARA PRUEBA. -->
-                <tbody>
+                <!-- DESCRIPCION DE LAS ORDENES  -->
+        <tbody>
+            <?php if ($resultado->num_rows > 0) { ?>
 
-                    <tr>
-                        <td>OS-001</td>
-                        <td>Carlos Torres</td>
-                        <td>Instalación de tomacorriente</td>
-                        <td>03/10/2026</td>
-                        <td>
-                            <span class="estado pendiente">
-                                Pendiente
-                            </span>
-                        </td>
+             <?php while ($orden = $resultado->fetch_assoc()) { ?>
 
-                        <td>
-                            <!-- ENLACES DE ACCIÓN  -->
-                            <a href="#" class="btn">
-                                Ver detalle
-                            </a>
+                <tr>
 
-                            <a href="#" class="btn secundario">
-                                Actualizar
-                            </a>
-                        </td>
-                    </tr>
+                    <td>
+                        <?php echo htmlspecialchars($orden["numero_orden"]); ?>
+                    </td>
 
-                    <tr>
-                        <td>OS-002</td>
-                        <td>Ana Casasola</td>
-                        <td>Cambio de breaker</td>
-                        <td>04/10/2026</td>
+                    <td>
+                        <?php
+                        echo htmlspecialchars(
+                            $orden["cliente_nombre"] . " " .
+                            $orden["cliente_apellido"]
+                        );
+                        ?>
+                    </td>
 
-                        <td>
-                            <span class="estado proceso">
-                                En proceso
-                            </span>
-                        </td>
+                    <td>
+                        <?php echo htmlspecialchars($orden["servicio_solicitado"]); ?>
+                    </td>
 
-                        <td>
-                            <a href="#" class="btn">
-                                Ver detalle
-                            </a>
+                    <td>
+                        <?php
+                        if (!empty($orden["fecha_programada"])) {
 
-                            <a href="#" class="btn secundario">
-                                Actualizar
-                            </a>
-                        </td>
-                    </tr>
+                            echo date(
+                                "d/m/Y H:i",
+                                strtotime($orden["fecha_programada"])
+                            );
 
-                    <tr>
-                        <td>OS-003</td>
-                        <td>José Franco</td>
-                        <td>Revisión eléctrica</td>
-                        <td>05/10/2026</td>
+                        } else {
 
-                        <td>
-                            <span class="estado finalizada">
-                                Finalizada
-                            </span>
-                        </td>
+                            echo "Sin programar";
 
-                        <td>
-                            <a href="#" class="btn">
-                                Ver detalle
-                            </a>
-                        </td>
-                    </tr>
+                        }
+                        ?>
+                    </td>
 
-                </tbody>
+                    <td>
+                        <span class="estado">
+                            <?php echo htmlspecialchars($orden["nombre_estado"]); ?>
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="ver_orden.php?id=<?php echo $orden["id_orden"]; ?>"
+                            class="btn"
+                        >
+                            Ver detalle
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            <?php } ?>
+
+                <?php } else { ?>
+
+                        <tr>
+                            <td colspan="6">
+                                No tienes órdenes asignadas.
+                            </td>
+                        </tr>
+
+                <?php } ?>
+
+                    
+
+        </tbody>
 
             </table>
 
