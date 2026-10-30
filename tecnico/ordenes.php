@@ -1,6 +1,7 @@
 <?php
 // INICIA LA SESIÓN.
 session_start();
+require_once __DIR__ . '/../includes/sesion.php';
 
 // VERIFICA QUE EL USUARIO HAYA INICIADO SESIÓN.
 if (!isset($_SESSION["id_usuario"])) {
@@ -49,13 +50,7 @@ $sql = "SELECT
 
         ORDER BY o.id_orden DESC";
 
-$stmt = $conexion->prepare($sql);
-
-$stmt->bind_param("i", $id_tecnico);
-
-$stmt->execute();
-
-$resultado = $stmt->get_result();
+require __DIR__ . '/../includes/filtrar_ordenes.php';
 
 
 ?>
@@ -106,27 +101,7 @@ $resultado = $stmt->get_result();
             </p>
         </div>
 
-        <!-- CONTROL DE BÚSQUEDA AÚN SIN CONECTAR. -->
-        <div class="filtros">
-
-            <!-- CAMPO PARA INGRESAR CLIENTE O NÚMERO DE ORDEN. -->
-            <input
-                type="text"
-                placeholder="Buscar por cliente o número de orden"
-            >
-
-            <!--ESTADO DE LA ORDEN. -->
-            <select>
-                <option>Todos los estados</option>
-                <option>Pendiente</option>
-                <option>En proceso</option>
-                <option>Finalizada</option>
-            </select>
-
-            <button>Buscar</button>
-
-        </div>
-
+        <?php require __DIR__ . '/../includes/formulario_filtros.php'; ?>
         <!-- TABLA DE ÓRDENES ASIGNADAS AL TECNICO. -->
         <div class="tabla-contenedor">
 
@@ -230,3 +205,5 @@ $resultado = $stmt->get_result();
 </body>
 
 </html>
+
+

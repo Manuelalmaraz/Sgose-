@@ -194,7 +194,9 @@ th {
 }
 
 /* ESTILO DEL BOTÓN BUSCAR. */
-.filtros button {
+/* Buscar y Limpiar comparten el mismo botón azul. */
+.filtros button,
+.filtros .btn-limpiar {
     padding: 10px 20px;
     border: none;
     background: #1769c2;
@@ -204,7 +206,8 @@ th {
 }
 
 /* COLOR DE BUSCAR AL PASAR EL CURSOR. */
-.filtros button:hover {
+.filtros button:hover,
+.filtros .btn-limpiar:hover {
     background: #1257a3;
 }
 
@@ -237,4 +240,50 @@ th {
 .detalle-grupo p {
     margin-bottom: 10px;
     line-height: 1.5;
+}
+/* Evita recortes en tablas y permite navegar desde un teléfono. */
+.tabla-contenedor, .detalle-grupo { overflow-x: auto; }
+.filtros { flex-wrap: wrap; }
+@media (max-width: 600px) {
+    .sidebar { position: static; width: 100%; height: auto; padding: 15px; }
+    .sidebar h2 { margin-bottom: 10px; }
+    .sidebar a { display: inline-block; padding: 8px; margin: 0; }
+    .contenido { margin-left: 0; padding: 15px; }
+    .tarjetas { grid-template-columns: 1fr; }
+}
+
+/* Presenta el enlace de limpieza como botón y centra su texto. */
+.filtros .btn-limpiar { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font: 13.3333px Arial, sans-serif; }
+
+
+/* Centra los títulos de cada pantalla y mantiene sus acciones debajo. */
+.encabezado,
+.encabezado-pagina {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Agrupa las tarjetas en el centro, con títulos y cifras alineados al centro. */
+.tarjetas-dashboard,
+.tarjetas,
+.resumen {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+.tarjeta {
+    width: 220px;
+    max-width: 100%;
+    text-align: center;
+}
+
+/* En teléfonos las tarjetas aprovechan el ancho disponible. */
+@media (max-width: 600px) {
+    .tarjeta { width: 100%; }
 }

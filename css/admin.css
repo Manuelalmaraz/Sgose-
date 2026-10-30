@@ -121,7 +121,9 @@ body {
 }
 
 /* BOTÓN DE LOS FILTROS */
-.filtros button {
+/* Buscar y Limpiar comparten el mismo botón azul. */
+.filtros button,
+.filtros .btn-limpiar {
     padding: 10px 18px;
     border: none;
     background: #1769c2;
@@ -244,13 +246,15 @@ th {
     cursor: pointer;
 }
 
-/* CONTENEDOR DEL FORMULARIO */
+/* Centra el formulario bajo el título en altas y edición. */
 .formulario-contenedor {
     background: white;
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     max-width: 700px;
+    width: 100%;
+    margin-inline: auto;
 }
 
 /* ESPACIADO ENTRE CAMPOS DEL FORMULARIO */
@@ -330,4 +334,84 @@ th {
     background-color: #5a6268;
     color: #ffffff;
     text-decoration: none;
+}
+/* Tablas y formularios utilizables en pantallas pequeñas. */
+.tabla-contenedor, .detalle-grupo { overflow-x: auto; }
+.filtros { flex-wrap: wrap; }
+.tarjeta { max-width: 100%; }
+.btn-guardar { background: #1769c2; color: white; border: 0; padding: 12px 18px; border-radius: 6px; cursor: pointer; }
+@media (max-width: 600px) {
+    .sidebar { position: static; width: 100%; height: auto; padding: 15px; }
+    .sidebar h2 { margin-bottom: 10px; }
+    .sidebar a { display: inline-block; padding: 8px; margin: 0; }
+    .contenido { margin-left: 0; padding: 15px; }
+    .tarjetas-dashboard { grid-template-columns: 1fr; }
+    .tarjeta { width: 100%; }
+    .encabezado { flex-wrap: wrap; gap: 12px; }
+    .filtros input { width: 100%; }
+}
+
+/* Presenta el enlace de limpieza como botón y centra su texto. */
+.filtros .btn-limpiar { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font: 13.3333px Arial, sans-serif; }
+
+
+/* Centra los títulos de cada pantalla y mantiene sus acciones debajo. */
+.encabezado,
+.encabezado-pagina {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Agrupa las tarjetas en el centro, con títulos y cifras alineados al centro. */
+.tarjetas-dashboard,
+.tarjetas,
+.resumen {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+.tarjeta {
+    width: 220px;
+    max-width: 100%;
+    text-align: center;
+}
+
+/* En teléfonos las tarjetas aprovechan el ancho disponible. */
+@media (max-width: 600px) {
+    .tarjeta { width: 100%; }
+}
+
+
+/* Alinea calendario, hora y minutos con controles de la misma altura. */
+.programacion-alineada { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.programacion-alineada .grupo-formulario { min-width: 0; }
+.programacion-alineada input, .programacion-alineada select { height: 42px; }
+@media (max-width: 420px) {
+    .programacion-alineada { grid-template-columns: 1fr 1fr; }
+    .programacion-alineada .grupo-formulario:first-child { grid-column: 1 / -1; }
+}
+
+/* Hora de 12 horas: listas cortas con desplazamiento independiente. */
+.programacion-alineada { grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); }
+.selector-compacto { position: relative; }
+.selector-hora-boton { width: 100%; height: 42px; padding: 10px; text-align: left; border: 1px solid #ccc; border-radius: 6px; background: white; color: #333; font: inherit; cursor: pointer; }
+.selector-hora-lista { position: absolute; top: calc(100% + 4px); left: 0; right: 0; max-height: 160px; overflow-y: auto; z-index: 20; background: white; border: 1px solid #bbb; border-radius: 6px; padding: 4px; box-shadow: 0 4px 12px #0002; }
+.selector-hora-lista[hidden] { display: none; }
+.selector-hora-lista button { display: block; width: 100%; border: 0; background: white; padding: 7px; text-align: center; font: inherit; cursor: pointer; border-radius: 4px; }
+.selector-hora-lista button:hover, .selector-hora-lista button:focus, .selector-hora-lista button[aria-selected="true"] { background: #1769c2; color: white; }
+@media (max-width: 600px) {
+    .programacion-alineada { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .programacion-alineada .grupo-formulario:first-child { grid-column: 1 / -1; }
+}
+
+/* Fecha y hora completa en dos cuadros alineados. */
+.programacion-alineada { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 420px) {
+    .programacion-alineada { grid-template-columns: 1fr; }
 }

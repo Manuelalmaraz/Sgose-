@@ -2,6 +2,7 @@
 
 // INICIA LA SESIÓN Y VALIDA EL ACCESO DEL ADMINISTRADOR
 session_start();
+require_once __DIR__ . '/../includes/sesion.php';
 
 if (!isset($_SESSION["id_usuario"])) {
     header("Location: ../index.php");
@@ -17,11 +18,13 @@ if ($_SESSION["id_rol"] != 1) {
 require_once "../config/conexion.php";
 
 // CONSULTA DE CLIENTES
-$sql = "SELECT * FROM clientes ORDER BY id_cliente DESC";
-$resultado = $conexion->query($sql);
+$buscar=trim($_GET['buscar'] ?? '');
+$patron='%'.$buscar.'%';
+$stmt=$conexion->prepare('SELECT * FROM clientes WHERE CONCAT_WS(" ",nombre,apellido) LIKE ? OR telefono LIKE ? ORDER BY id_cliente DESC');
+$stmt->bind_param('ss',$patron,$patron); $stmt->execute(); $resultado=$stmt->get_result();
 
 // TOTAL DE CLIENTES
-$total_clientes = $resultado->num_rows;
+$total_clientes = $conexion->query('SELECT COUNT(*) AS total FROM clientes')->fetch_assoc()['total'];
 
 ?>
 
@@ -80,10 +83,10 @@ $total_clientes = $resultado->num_rows;
     </div>
 
     <!-- BÚSQUEDA DE CLIENTES -->
-    <div class="filtros">
+    <form class="filtros" method="get">
 
         <input
-            type="text"
+            type="text" name="buscar" value="<?= escapar($buscar) ?>" aria-label="Nombre o teléfono"
             placeholder="Buscar cliente por nombre o teléfono"
         >
 
@@ -91,7 +94,7 @@ $total_clientes = $resultado->num_rows;
             Buscar
         </button>
 
-    </div>
+    </form>
 
     <!-- LISTADO DE CLIENTES Y ACCIONES -->
     <div class="tabla-contenedor">
@@ -127,11 +130,11 @@ $total_clientes = $resultado->num_rows;
                 </td>
 
                 <td>
-                    <?php echo htmlspecialchars($cliente["correo"]); ?>
+                    <?php echo escapar($cliente["correo"]); ?>
                 </td>
 
                 <td>
-                    <?php echo htmlspecialchars($cliente["direccion"]); ?>
+                    <?php echo escapar($cliente["direccion"]); ?>
                 </td>
 
                 <td>
@@ -151,13 +154,13 @@ $total_clientes = $resultado->num_rows;
                         Editar
                     </a>
 
-                    <a href="#" class="btn secundario">
+                    <a href="ordenes.php?cliente=<?= (int)$cliente['id_cliente'] ?>" class="btn secundario">
                         Historial
                     </a>
                 </td>
             </tr>
 
-            <?php } ?>
+            <?php } if (!$resultado->num_rows) { ?><tr><td colspan="6">No hay clientes que coincidan.</td></tr><?php } ?>
 
             </tbody>
 
@@ -169,3 +172,4 @@ $total_clientes = $resultado->num_rows;
 
 </body>
 </html>
+

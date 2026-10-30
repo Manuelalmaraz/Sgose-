@@ -1,223 +1,43 @@
 <?php
-// INICIA LA SESIÓN Y VALIDA EL ACCESO DEL ADMINISTRADOR.
+// Alta y edición de clientes; conserva el regreso a Nueva orden con el cliente seleccionado.
 session_start();
-
-if (!isset($_SESSION["id_usuario"])) {
-    header("Location: ../index.php");
-    exit;
+require_once '../includes/sesion.php';
+if(!isset($_SESSION['id_usuario']) || $_SESSION['id_rol']!=1) { header('Location: ../index.php'); exit; }
+$editar=defined('EDITAR_CLIENTE');
+$id=$editar ? (int)($_GET['id'] ?? 0) : 0;
+$cliente=['nombre'=>'','apellido'=>'','telefono'=>'','correo'=>'','direccion'=>'']; $mensaje='';
+$desde=($_POST['desde'] ?? $_GET['desde'] ?? '')==='orden' ? 'orden' : '';
+if($editar) {
+    $stmt=$conexion->prepare('SELECT * FROM clientes WHERE id_cliente=?'); $stmt->bind_param('i',$id); $stmt->execute(); $cliente=$stmt->get_result()->fetch_assoc();
+    if(!$cliente) { http_response_code(404); exit('Cliente no encontrado.'); }
 }
-
-if ($_SESSION["id_rol"] != 1) {
-    header("Location: ../tecnico/dashboard.php");
-    exit;
-}
-
-// CONECTA CON LA BASE DE DATOS.
-require_once "../config/conexion.php";
-
-// PREPARA EL MENSAJE PARA MOSTRAR ERRORES.
-$mensaje = "";
-
-// PROCESA EL FORMULARIO ENVIADO.
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    // OBTIENE Y LIMPIA LOS DATOS DEL CLIENTE.
-    $nombre = trim($_POST["nombre"]);
-    $apellido = trim($_POST["apellido"]);
-    $telefono = trim($_POST["telefono"]);
-    $correo = trim($_POST["correo"]);
-    $direccion = trim($_POST["direccion"]);
-
-    // VALIDA LOS CAMPOS OBLIGATORIOS.
-    if ($nombre === "" || $telefono === "") {
-        $mensaje = "El nombre y teléfono son obligatorios.";
-    } else {
-
-        // PREPARA Y EJECUTA EL REGISTRO DEL CLIENTE.
-        $sql = "INSERT INTO clientes
-                (nombre, apellido, telefono, correo, direccion)
-                VALUES (?, ?, ?, ?, ?)";
-
-        $stmt = $conexion->prepare($sql);
-
-        $stmt->bind_param(
-            "sssss",
-            $nombre,
-            $apellido,
-            $telefono,
-            $correo,
-            $direccion
-        );
-
-        // REDIRIGE SI EL REGISTRO SE COMPLETA O MUESTRA UN ERROR.
-        if ($stmt->execute()) {
-
-        $id_nuevo_cliente = $stmt->insert_id;
-
-     if (isset($_POST["desde"]) && $_POST["desde"] == "orden") {
-
-            header(
-                "Location: nueva_orden.php?id_cliente=" .
-                $id_nuevo_cliente
-            );
-
-            exit;
-            }
-
-                header("Location: clientes.php?mensaje=creado");
-                exit;
-            }
+if($_SERVER['REQUEST_METHOD']==='POST') {
+    try {
+        validar_formulario();
+        $nombre=campo_texto('nombre',100,true); $apellido=campo_texto('apellido',100); $telefono=campo_texto('telefono',20,true); $correo=campo_texto('correo',150); $direccion=campo_texto('direccion',255);
+        if($correo!=='' && !filter_var($correo,FILTER_VALIDATE_EMAIL)) throw new DomainException('Escribe un correo válido o deja el campo vacío.');
+        if($editar) {
+            $stmt=$conexion->prepare('UPDATE clientes SET nombre=?,apellido=?,telefono=?,correo=?,direccion=? WHERE id_cliente=?');
+            $stmt->bind_param('sssssi',$nombre,$apellido,$telefono,$correo,$direccion,$id);
+        } else {
+            $stmt=$conexion->prepare('INSERT INTO clientes(nombre,apellido,telefono,correo,direccion) VALUES(?,?,?,?,?)');
+            $stmt->bind_param('sssss',$nombre,$apellido,$telefono,$correo,$direccion);
         }
+        $stmt->execute();
+        if(!$editar) $id=$stmt->insert_id;
+        header('Location: '.($desde==='orden' ? 'nueva_orden.php?id_cliente='.$id : 'clientes.php?mensaje=guardado')); exit;
+    } catch(Throwable $e) {
+        $mensaje=$e instanceof DomainException ? $e->getMessage() : 'No se pudo guardar el cliente.';
+        if(!$e instanceof DomainException) error_log((string)$e);
+    }
+    foreach(['nombre','apellido','telefono','correo','direccion'] as $campo) $cliente[$campo]=$_POST[$campo] ?? '';
 }
+cabecera_admin($editar?'Editar cliente':'Nuevo cliente','clientes');
 ?>
-
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <!-- CONFIGURA LA PÁGINA Y CARGA LOS ESTILOS -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>SGOSE - Nuevo cliente</title>
-
-    <link rel="stylesheet" href="../css/admin.css">
-</head>
-
-<body>
-
-<!-- MENÚ LATERAL DE ADMINISTRACIÓN -->
-<div class="sidebar">
-
-    <h2>⚡ SGOSE</h2>
-
-    <a href="dashboard.php">Dashboard</a>
-    <a href="clientes.php" class="activo">Clientes</a>
-    <a href="ordenes.php">Órdenes</a>
-    <a href="usuarios.php">Usuarios</a>
-    <a href="historial.php">Historial</a>
-
-    <a href="../logout.php">Cerrar sesión</a>
-
-</div>
-
-<div class="contenido">
-
-    <!-- ENCABEZADO DEL FORMULARIO -->
-    <div class="encabezado">
-
-        <div>
-            <h1>Nuevo cliente</h1>
-            <p>Registra la información del cliente.</p>
-        </div>
-
-    </div>
-
-    <!-- ÁREA PRINCIPAL PARA INGRESAR LOS DATOS -->
-    <!-- FORMULARIO PARA REGISTRAR UN CLIENTE -->
-    <div class="formulario-contenedor">
-
-        <!-- MUESTRA LOS ERRORES DE VALIDACIÓN O REGISTRO -->
-        <?php if ($mensaje !== "") { ?>
-
-            <div class="mensaje-error">
-                <?php echo htmlspecialchars($mensaje); ?>
-            </div>
-
-        <?php } ?>
-
-        <form method="POST">
-
-                <?php if (isset($_GET["desde"]) && $_GET["desde"] == "orden") { ?>
-                    <input type="hidden" name="desde" value="orden">
-                <?php } ?>
-
-            <!-- CAMPO OBLIGATORIO: NOMBRE -->
-            <div class="grupo-formulario">
-
-                <label>Nombre *</label>
-
-                <input
-                    type="text"
-                    name="nombre"
-                    required
-                >
-
-            </div>
-
-            <!-- CAMPO OPCIONAL: APELLIDO -->
-            <div class="grupo-formulario">
-
-                <label>Apellido</label>
-
-                <input
-                    type="text"
-                    name="apellido"
-                >
-
-            </div>
-
-            <!-- CAMPO OBLIGATORIO: TELÉFONO -->
-            <div class="grupo-formulario">
-
-                <label>Teléfono *</label>
-
-                <input
-                    type="text"
-                    name="telefono"
-                    required
-                >
-
-            </div>
-
-            <!-- CAMPO OPCIONAL: CORREO -->
-            <div class="grupo-formulario">
-
-                <label>Correo</label>
-
-                <input
-                    type="email"
-                    name="correo"
-                >
-
-            </div>
-
-            <!-- CAMPO OPCIONAL: DIRECCIÓN -->
-            <div class="grupo-formulario">
-
-                <label>Dirección</label>
-
-                <textarea
-                    name="direccion"
-                    rows="4"
-                ></textarea>
-
-            </div>
-
-            <!-- BOTONES PARA GUARDAR O CANCELAR -->
-            <div class="acciones-formulario">
-
-                <button
-                    type="submit"
-                    class="btn-principal"
-                >
-                    Guardar cliente
-                </button>
-
-                <a
-                    href="clientes.php"
-                    class="btn secundario"
-                >
-                    Cancelar
-                </a>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</div>
-
-</body>
-</html>
+<div class="formulario-contenedor">
+<?php if($mensaje) { ?><p class="mensaje-error" role="alert"><?= escapar($mensaje) ?></p><?php } ?>
+<!-- Los datos se conservan tras una validación fallida y siempre se escapan al mostrarlos. -->
+<form method="post"><input type="hidden" name="csrf" value="<?= escapar(token_formulario()) ?>"><input type="hidden" name="desde" value="<?= $desde ?>">
+<?php foreach(['nombre'=>['Nombre',100],'apellido'=>['Apellido',100],'telefono'=>['Teléfono',20],'correo'=>['Correo',150],'direccion'=>['Dirección',255]] as $campo=>$info) { ?><div class="grupo-formulario"><label for="<?= $campo ?>"><?= $info[0] ?></label><input name="<?= $campo ?>" id="<?= $campo ?>" type="<?= $campo==='correo'?'email':'text' ?>" maxlength="<?= $info[1] ?>" value="<?= escapar($cliente[$campo]) ?>" <?= in_array($campo,['nombre','telefono'])?'required':'' ?>></div><?php } ?>
+<button class="btn-principal">Guardar cliente</button> <a class="btn secundario" href="<?= $desde==='orden'?'nueva_orden.php':'clientes.php' ?>">Volver</a></form></div>
+<?php pie_admin(); ?>

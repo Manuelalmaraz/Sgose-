@@ -72,6 +72,8 @@ if (!password_verify($password, $usuario["password"])) {
     exit;
 }
 
+// Regenera el identificador para proteger la sesión después del acceso.
+session_regenerate_id(true);
 // GUARDA LOS DATOS DEL USUARIO EN LA SESIÓN.
 $_SESSION["id_usuario"] = $usuario["id_usuario"];
 $_SESSION["nombre"] = $usuario["nombre"];
@@ -99,3 +101,4 @@ header("Location: ../index.php?error=rol");
 exit;
 
 ?>
+

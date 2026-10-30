@@ -1,6 +1,7 @@
 <?php
 // INICIA LA SESIÓN Y VALIDA EL ACCESO DEL ADMINISTRADOR.
 session_start();
+require_once __DIR__ . '/../includes/sesion.php';
 
 if (!isset($_SESSION["id_usuario"])) {
     header("Location: ../index.php");
@@ -11,6 +12,7 @@ if ($_SESSION["id_rol"] != 1) {
     header("Location: ../tecnico/dashboard.php");
     exit;
 }
+require_once __DIR__ . '/../includes/resumen.php';
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +51,8 @@ if ($_SESSION["id_rol"] != 1) {
         <div>
             <h1>
                 Bienvenido,
-                <?php echo htmlspecialchars($_SESSION["nombre"]); ?>
+                <?php echo htmlspecialchars($_SESSION["nombre"]);
+?>
             </h1>
 
             <p>Panel general del administrador</p>
@@ -62,22 +65,22 @@ if ($_SESSION["id_rol"] != 1) {
 
         <div class="tarjeta">
             <h3>Órdenes pendientes</h3>
-            <p>5</p>
+            <p><?= $resumen["pendientes"] ?></p>
         </div>
 
         <div class="tarjeta">
             <h3>En proceso</h3>
-            <p>3</p>
+            <p><?= $resumen["proceso"] ?></p>
         </div>
 
         <div class="tarjeta">
             <h3>Finalizadas</h3>
-            <p>8</p>
+            <p><?= $resumen["finalizadas"] ?></p>
         </div>
 
         <div class="tarjeta">
             <h3>Clientes</h3>
-            <p>12</p>
+            <p><?= $total_clientes ?></p>
         </div>
 
     </div>
@@ -98,3 +101,5 @@ if ($_SESSION["id_rol"] != 1) {
 
 </body>
 </html>
+
+

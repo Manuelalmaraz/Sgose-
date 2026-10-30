@@ -2,6 +2,7 @@
 
 // INICIA LA SESIÓN.
 session_start();
+require_once __DIR__ . '/../includes/sesion.php';
 
 // VERIFICA QUE EL USUARIO HAYA INICIADO SESIÓN.
 if (!isset($_SESSION["id_usuario"])) {
@@ -27,10 +28,12 @@ if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
 $id_orden = (int) $_GET["id"];
 $id_tecnico = $_SESSION["id_usuario"];
 
+require_once __DIR__ . '/../includes/procesar_orden.php';
+
 // BUSCA LA ORDEN.
 // TAMBIÉN VERIFICA QUE PERTENEZCA AL TÉCNICO QUE INICIÓ SESIÓN.
 $sql = "SELECT
-            o.id_orden,
+            o.id_orden, o.id_estado,
             o.numero_orden,
             o.tipo_solicitud,
             o.servicio_solicitado,
@@ -102,7 +105,7 @@ $orden = $resultado->fetch_assoc();
 
     <link rel="stylesheet" href="../css/tecnico.css">
 
-</head>
+<link rel="stylesheet" href="../css/orden.css"></head>
 
 <body>
 
@@ -273,9 +276,15 @@ $orden = $resultado->fetch_assoc();
 
         </div>
 
+        <?php require __DIR__ . '/../includes/formulario_orden.php'; ?>
+        <?php require __DIR__ . '/../includes/detalle_trabajo.php'; ?>
+        <?php require __DIR__ . '/../includes/historial.php'; ?>
     </main>
 
 </div>
 
 </body>
 </html>
+
+
+

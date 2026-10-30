@@ -1,6 +1,7 @@
 <?php
 // INICIA LA SESIÓN Y VALIDA EL ACCESO DEL ADMINISTRADOR.
 session_start();
+require_once __DIR__ . '/../includes/sesion.php';
 
 if (!isset($_SESSION["id_usuario"])) {
     header("Location: ../index.php");
@@ -50,7 +51,8 @@ $sql = "SELECT
 
         ORDER BY o.id_orden DESC";
 
-$resultado = $conexion->query($sql);
+require __DIR__ . '/../includes/filtrar_ordenes.php';
+require_once __DIR__ . '/../includes/resumen.php';
 ?>
 
 <!DOCTYPE html>
@@ -92,7 +94,7 @@ $resultado = $conexion->query($sql);
             <p>Consulta y administra las órdenes registradas.</p>
         </div>
 
-            //BOTON PARA UNA NUEVA ORDEN 
+            <!-- BOTÓN PARA UNA NUEVA ORDEN --> 
         <a 
             href="nueva_orden.php" class="btn-nuevo">
             + Nueva orden
@@ -104,53 +106,28 @@ $resultado = $conexion->query($sql);
     <div class="tarjetas-dashboard">
 
         <div class="tarjeta">
-            <h3>Solicitadas</h3>
-            <p>4</p>
+            <h3>Pendientes</h3>
+            <p><?= $resumen["pendientes"] ?></p>
         </div>
 
         <div class="tarjeta">
             <h3>En proceso</h3>
-            <p>3</p>
+            <p><?= $resumen["proceso"] ?></p>
         </div>
 
         <div class="tarjeta">
             <h3>Finalizadas</h3>
-            <p>6</p>
+            <p><?= $resumen["finalizadas"] ?></p>
         </div>
 
         <div class="tarjeta">
             <h3>Canceladas</h3>
-            <p>1</p>
+            <p><?= $resumen["canceladas"] ?></p>
         </div>
 
     </div>
 
-    <!-- FILTROS PARA BUSCAR ÓRDENES -->
-    <div class="filtros">
-
-        <input
-            type="text"
-            placeholder="Buscar por número de orden o cliente"
-        >
-
-        <select>
-            <option>Todos los estados</option>
-            <option>Solicitada</option>
-            <option>En proceso</option>
-            <option>Finalizada</option>
-            <option>Cancelada</option>
-        </select>
-
-        <select>
-            <option>Todos los técnicos</option>
-            <option>Estuardo Vásquez</option>
-            <option>Fran González</option>
-        </select>
-
-        <button>Filtrar</button>
-
-    </div>
-
+    <?php require __DIR__ . '/../includes/formulario_filtros.php'; ?>
     <!-- TABLA DE ÓRDENES Y ACCIONES -->
     <div class="tabla-contenedor">
 
@@ -164,8 +141,8 @@ $resultado = $conexion->query($sql);
                     <th>Categoría</th>
                     <th>Servicio</th>
                     <th>Técnico</th>
-                    <th>Fecha programada</th>
                     <th>Estado</th>
+                    <th>Fecha programada</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -271,3 +248,5 @@ $resultado = $conexion->query($sql);
 
 </body>
 </html>
+
+
