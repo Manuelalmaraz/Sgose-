@@ -9,8 +9,8 @@ session_unset();
 session_destroy();
 
 // REDIRIGE A INDEX.PHP.
-header("Location: index.php");
+header('Location: index.php');
 // DETIENE EL CÓDIGO.
-exit;
+exit();
 
 ?>

@@ -1,9 +1,8 @@
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box; /* IRELLENO Y ANCHO DE BORDE */
-    font-family: "Segoe UI", georgia, Tahoma, sans-serif; /* FUENTE DE TEXTO */
+    font-family: 'Segoe UI', georgia, Tahoma, sans-serif; /* FUENTE DE TEXTO */
 }
 
 /* FONDO DE LA PAGINA */
@@ -128,11 +127,8 @@ button:hover {
 
     /* DESGRADIENTE SOBRE LA IMAGEN DEL LADO DERECHO FONDO AZUL */
     background:
-        linear-gradient(
-            rgba(12, 55, 100, 0.88),
-            rgba(12, 55, 100, 0.88)
-        ),
-        url("../img/electricidad.jpg");
+        linear-gradient(rgba(12, 55, 100, 0.88), rgba(12, 55, 100, 0.88)),
+        url('../img/electricidad.jpg');
 
     background-size: cover; /* USAR TODO EL PANEL */
     background-position: center; /* ALINEACION DE LA IMAGEN EN EL CENTRO  */
@@ -162,7 +158,6 @@ button:hover {
 
 /* LIMITA EL ANCHO DEL FORMULARIO EN PANTALLAS PEQUEÑAS */
 @media (max-width: 800px) {
-
     /* DEJA COLOCAR LOS PANELS LADO A LADO. */
     .login-container {
         display: block;
@@ -179,5 +174,4 @@ button:hover {
     .login-info {
         display: none;
     }
-
 }

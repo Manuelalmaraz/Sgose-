@@ -51,23 +51,36 @@ document.querySelectorAll('[data-selector-compacto]').forEach((select) => {
         list.scrollTop = Math.max(0, chosen.offsetTop - list.clientHeight / 2);
         chosen.focus({ preventScroll: true });
     };
-    trigger.addEventListener('click', () => list.hidden ? open() : close());
+    trigger.addEventListener('click', () => (list.hidden ? open() : close()));
     // Flechas, Inicio, Fin y Escape permiten elegir también sin usar el ratón.
     wrapper.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') { close(); trigger.focus(); }
+        if (event.key === 'Escape') {
+            close();
+            trigger.focus();
+        }
         if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
             event.preventDefault();
-            if (list.hidden) { open(); return; }
+            if (list.hidden) {
+                open();
+                return;
+            }
             const index = [...list.children].indexOf(document.activeElement);
-            list.children[(index + (event.key === 'ArrowDown' ? 1 : -1) + list.children.length) % list.children.length].focus();
+            list.children[
+                (index + (event.key === 'ArrowDown' ? 1 : -1) + list.children.length) %
+                    list.children.length
+            ].focus();
         }
         if (!list.hidden && ['Home', 'End'].includes(event.key)) {
             event.preventDefault();
             list.children[event.key === 'Home' ? 0 : list.children.length - 1].focus();
         }
     });
-    document.addEventListener('click', (event) => { if (!wrapper.contains(event.target)) close(); });
-    wrapper.addEventListener('focusout', (event) => { if (!wrapper.contains(event.relatedTarget)) close(); });
+    document.addEventListener('click', (event) => {
+        if (!wrapper.contains(event.target)) close();
+    });
+    wrapper.addEventListener('focusout', (event) => {
+        if (!wrapper.contains(event.relatedTarget)) close();
+    });
     select.before(wrapper);
     wrapper.append(trigger, list);
     select.hidden = true;

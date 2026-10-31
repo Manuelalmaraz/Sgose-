@@ -3,7 +3,7 @@ param([Parameter(Mandatory)][string]$AdminPassword,[Parameter(Mandatory)][string
 . "$PSScriptRoot\verificar-sgose.ps1" -AdminPassword $AdminPassword -TecnicoPassword $TecnicoPassword -OtroTecnicoPassword $OtroTecnicoPassword
 function Token($path,$session) {
     $p=Page $path $session
-    $t=[regex]::Match($p.Content,'name="csrf" value="([^"]+)"').Groups[1].Value
+    $t=[regex]::Match($p.Content,'name="csrf"\s+value="([^"]+)"').Groups[1].Value
     if(!$t){throw "Falta token en $path"}; return $t
 }
 function Send($path,$session,$body) {
@@ -88,6 +88,7 @@ try {
     if($userId -gt 0){$null=Sql "DELETE FROM usuarios WHERE id_usuario=$userId AND correo='$email';"}
     Write-Output 'Datos temporales del cierre retirados.'
 }
+
 
 
 

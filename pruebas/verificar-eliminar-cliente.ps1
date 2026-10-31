@@ -10,7 +10,7 @@ try {
  $id=[int](Sql "INSERT INTO clientes(nombre,telefono) VALUES('$marca','5555-0000'); SELECT LAST_INSERT_ID();")
  $url="$base/admin/eliminar_cliente.php?id=$id"
  $r=Invoke-WebRequest $url -WebSession $s -UseBasicParsing
- $token=[regex]::Match($r.Content,'name="csrf" value="([^"]+)"').Groups[1].Value
+ $token=[regex]::Match($r.Content,'name="csrf"\s+value="([^"]+)"').Groups[1].Value
  Check ($token -and (Sql "SELECT COUNT(*) FROM clientes WHERE id_cliente=$id") -eq 1) 'Abrir confirmación conserva al cliente'
  $r=Invoke-WebRequest $url -WebSession $s -Method Post -Body @{csrf='invalido';confirmar='eliminar'} -UseBasicParsing -SkipHttpErrorCheck
  Check ($r.StatusCode -eq 403 -and (Sql "SELECT COUNT(*) FROM clientes WHERE id_cliente=$id") -eq 1) 'Token inválido bloqueado'
@@ -29,3 +29,4 @@ try {
  if($orden){$null=Sql "DELETE FROM orden_servicio WHERE id_orden=$orden AND servicio_solicitado='$marca'"}
  if($id){$null=Sql "DELETE FROM clientes WHERE id_cliente=$id AND nombre='$marca'"}
 }
+

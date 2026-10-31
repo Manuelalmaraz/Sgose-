@@ -11,7 +11,7 @@ function Check($ok,$message) { if(!$ok){throw $message}; Write-Output "OK: $mess
 function Page($path,$session) { $r=Invoke-WebRequest "$base/$path" -WebSession $session -UseBasicParsing; Check ($r.Content -notmatch '(?i)Fatal error|Warning:|Uncaught') "Página $path sin errores PHP"; return $r }
 function PostOrder($id,$session,$values) {
     $page=Page "tecnico/ver_orden.php?id=$id" $session
-    $token=[regex]::Match($page.Content,'name="csrf" value="([^"]+)"').Groups[1].Value
+    $token=[regex]::Match($page.Content,'name="csrf"\s+value="([^"]+)"').Groups[1].Value
     $state=Sql "SELECT id_estado FROM orden_servicio WHERE id_orden=$id"
     $script:lastCsrf=$token; $values['csrf']=$token; $values['estado_actual']=$state
     return Invoke-WebRequest "$base/tecnico/ver_orden.php?id=$id" -WebSession $session -Method Post -Body $values -UseBasicParsing
@@ -30,7 +30,7 @@ try {
     foreach($caso in @('FINALIZAR','RECHAZAR')) {
         $marker='PRUEBA-SGOSE-'+$caso+'-'+(Get-Date -Format yyyyMMddHHmmss)
         $form=Page 'admin/nueva_orden.php' $admin
-        $adminToken=[regex]::Match($form.Content,'name="csrf" value="([^"]+)"').Groups[1].Value
+        $adminToken=[regex]::Match($form.Content,'name="csrf"\s+value="([^"]+)"').Groups[1].Value
         $r=Invoke-WebRequest "$base/admin/nueva_orden.php" -WebSession $admin -Method Post -Body @{csrf=$adminToken;id_cliente=$cliente;id_categoria=$categoria;tipo_solicitud='Servicio';servicio_solicitado=$marker;id_tecnico='2';fecha_programada='';observaciones='Prueba temporal de integración'} -UseBasicParsing
         $id=Sql "SELECT id_orden FROM orden_servicio WHERE servicio_solicitado='$marker'"
         Check ($id -match '^\d+$') "Crear orden $caso con fecha opcional"
@@ -75,6 +75,7 @@ try {
     foreach($id in $created) { $null=Sql "DELETE FROM historial_orden WHERE id_orden=$id; DELETE FROM orden_servicio WHERE id_orden=$id AND servicio_solicitado LIKE 'PRUEBA-SGOSE-%';" }
     Write-Output "Órdenes temporales retiradas: $($created.Count)"
 }
+
 
 
 

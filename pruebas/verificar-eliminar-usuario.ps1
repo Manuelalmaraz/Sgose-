@@ -7,7 +7,7 @@ function Check($ok,$msg){if(!$ok){throw $msg}; Write-Output "OK: $msg"}
 $session=New-Object Microsoft.PowerShell.Commands.WebRequestSession
 $null=Invoke-WebRequest "$base/controllers/login.php" -WebSession $session -Method Post -Body @{correo='admin@sgose.com';password=$AdminPassword} -UseBasicParsing
 $p=Invoke-WebRequest "$base/admin/usuario.php" -WebSession $session -UseBasicParsing
-$token=[regex]::Match($p.Content,'name="csrf" value="([^"]+)"').Groups[1].Value
+$token=[regex]::Match($p.Content,'name="csrf"\s+value="([^"]+)"').Groups[1].Value
 $email='prueba-eliminar-'+[guid]::NewGuid().ToString('N')+'@example.test'
 $id=0; $orderId=0
 try {
@@ -36,4 +36,5 @@ try {
     if($orderId){$null=Sql "DELETE FROM historial_orden WHERE id_orden=$orderId; DELETE FROM orden_servicio WHERE id_orden=$orderId AND servicio_solicitado='PRUEBA-ELIMINAR';"}
     if($id){$null=Sql "DELETE FROM usuarios WHERE id_usuario=$id AND correo='$email';"}
 }
+
 

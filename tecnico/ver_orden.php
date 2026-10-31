@@ -5,28 +5,28 @@ session_start();
 require_once __DIR__ . '/../includes/sesion.php';
 
 // VERIFICA QUE EL USUARIO HAYA INICIADO SESIÓN.
-if (!isset($_SESSION["id_usuario"])) {
-    header("Location: ../index.php");
-    exit;
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: ../index.php');
+    exit();
 }
 
 // PERMITE EL ACCESO SOLO AL TÉCNICO.
-if ($_SESSION["id_rol"] != 2) {
-    header("Location: ../admin/dashboard.php");
-    exit;
+if ($_SESSION['id_rol'] != 2) {
+    header('Location: ../admin/dashboard.php');
+    exit();
 }
 
 // CONEXIÓN A LA BASE DE DATOS.
-require_once "../config/conexion.php";
+require_once '../config/conexion.php';
 
 // VERIFICA QUE SE RECIBA EL ID DE LA ORDEN.
-if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
-    header("Location: ordenes.php");
-    exit;
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    header('Location: ordenes.php');
+    exit();
 }
 
-$id_orden = (int) $_GET["id"];
-$id_tecnico = $_SESSION["id_usuario"];
+$id_orden = (int) $_GET['id'];
+$id_tecnico = $_SESSION['id_usuario'];
 
 require_once __DIR__ . '/../includes/procesar_orden.php';
 
@@ -54,29 +54,20 @@ $sql = "SELECT
             cs.nombre_categoria,
 
             e.nombre_estado
-
-        FROM orden_servicio o
-
-        INNER JOIN clientes c
+             FROM orden_servicio o
+             INNER JOIN clientes c
             ON o.id_cliente = c.id_cliente
-
-        INNER JOIN categorias_servicio cs
+             INNER JOIN categorias_servicio cs
             ON o.id_categoria = cs.id_categoria
-
-        INNER JOIN estados_orden e
+             INNER JOIN estados_orden e
             ON o.id_estado = e.id_estado
-
-        WHERE o.id_orden = ?
+             WHERE o.id_orden = ?
         AND o.id_tecnico = ?";
 
 $stmt = $conexion->prepare($sql);
 
 // ASOCIA EL ID DE LA ORDEN Y EL ID DEL TÉCNICO A LOS PARÁMETROS DE LA CONSULTA.
-$stmt->bind_param(
-    "ii",
-    $id_orden,
-    $id_tecnico
-);
+$stmt->bind_param('ii', $id_orden, $id_tecnico);
 
 // EJECUTA LA CONSULTA Y OBTIENE EL RESULTADO.
 $stmt->execute();
@@ -85,207 +76,145 @@ $resultado = $stmt->get_result();
 
 // SI LA ORDEN NO EXISTE O NO PERTENECE AL TÉCNICO.
 if ($resultado->num_rows == 0) {
-    header("Location: ordenes.php");
-    exit;
+    header('Location: ordenes.php');
+    exit();
 }
 
 $orden = $resultado->fetch_assoc();
-
 ?>
 <!-- MUESTRA LA INFORMACIÓN DE LA ORDEN ASIGNADA AL TÉCNICO. -->
 <!DOCTYPE html>
 <html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
+        <title>Detalle de orden - SGOSE</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/tecnico.css" />
 
-    <title>Detalle de orden - SGOSE</title>
+        <link rel="stylesheet" href="../css/orden.css" />
+    </head>
 
-    <link rel="stylesheet" href="../css/tecnico.css">
+    <body>
+        <div class="contenedor-tecnico">
+            <aside class="sidebar">
+                <!-- MENÚ DE NAVEGACIÓN DEL TÉCNICO. -->
+                <h2>SGOSE</h2>
 
-<link rel="stylesheet" href="../css/orden.css"></head>
+                <a href="dashboard.php">Dashboard</a>
+                <a href="ordenes.php">Mis órdenes</a>
+                <a href="../logout.php">Cerrar sesión</a>
+            </aside>
 
-<body>
+            <main class="contenido">
+                <!-- ENCABEZADO CON EL NÚMERO DE ORDEN Y EL ACCESO AL LISTADO. -->
+                <div class="encabezado-pagina">
+                    <div>
+                        <h1>
+                            Orden
+                            <?php echo htmlspecialchars($orden['numero_orden']); ?>
+                        </h1>
 
-<div class="contenedor-tecnico">
+                        <p>Información de la orden asignada.</p>
+                    </div>
 
-    <aside class="sidebar">
+                    <a href="ordenes.php" class="btn">Volver</a>
+                </div>
 
-        <!-- MENÚ DE NAVEGACIÓN DEL TÉCNICO. -->
-        <h2>SGOSE</h2>
+                <div class="detalle-orden">
+                    <!-- DATOS DEL SERVICIO, SU CATEGORÍA, ESTADO Y DESCRIPCIÓN. -->
+                    <div class="detalle-grupo">
+                        <h3>Información del servicio</h3>
 
-        <a href="dashboard.php">Dashboard</a>
-        <a href="ordenes.php">Mis órdenes</a>
-        <a href="../logout.php">Cerrar sesión</a>
+                        <p>
+                            <strong>Tipo de solicitud:</strong>
+                            <?php echo htmlspecialchars($orden['tipo_solicitud']); ?>
+                        </p>
 
-    </aside>
+                        <p>
+                            <strong>Categoría:</strong>
+                            <?php echo htmlspecialchars($orden['nombre_categoria']); ?>
+                        </p>
 
-    <main class="contenido">
+                        <p>
+                            <strong>Estado:</strong>
+                            <?php echo etiqueta_estado($orden['nombre_estado']); ?>
+                        </p>
 
-        <!-- ENCABEZADO CON EL NÚMERO DE ORDEN Y EL ACCESO AL LISTADO. -->
-        <div class="encabezado-pagina">
+                        <p>
+                            <strong>Servicio solicitado:</strong>
+                            <br />
 
-            <div>
+                            <?php echo nl2br(htmlspecialchars($orden['servicio_solicitado'])); ?>
+                        </p>
+                    </div>
 
-                <h1>
-                    Orden
-                    <?php echo htmlspecialchars($orden["numero_orden"]); ?>
-                </h1>
+                    <!-- DATOS DE CONTACTO Y DOMICILIO DEL CLIENTE. -->
+                    <div class="detalle-grupo">
+                        <h3>Cliente</h3>
 
-                <p>Información de la orden asignada.</p>
+                        <p>
+                            <strong>Nombre:</strong>
 
-            </div>
+                            <?php echo htmlspecialchars(
+                        $orden['cliente_nombre'] . ' ' . $orden['cliente_apellido']
+                    ); ?>
+                        </p>
 
-            <a href="ordenes.php" class="btn">
-                Volver
-            </a>
+                        <p>
+                            <strong>Teléfono:</strong>
+                            <?php echo htmlspecialchars($orden['cliente_telefono']); ?>
+                        </p>
 
-        </div>
+                        <p>
+                            <strong>Dirección:</strong>
 
+                            <?php echo !empty($orden['cliente_direccion'])
+                        ? htmlspecialchars($orden['cliente_direccion'])
+                        : 'No registrada'; ?>
+                        </p>
+                    </div>
 
-        <div class="detalle-orden">
+                    <!-- FECHAS DE SOLICITUD Y PROGRAMACIÓN DEL SERVICIO. -->
+                    <div class="detalle-grupo">
+                        <h3>Programación</h3>
 
-            <!-- DATOS DEL SERVICIO, SU CATEGORÍA, ESTADO Y DESCRIPCIÓN. -->
-            <div class="detalle-grupo">
+                        <p>
+                            <strong>Fecha de solicitud:</strong>
 
-                <h3>Información del servicio</h3>
+                            <?php echo date('d/m/Y h:i A', strtotime($orden['fecha_solicitud'])); ?>
+                        </p>
 
-                <p>
-                    <strong>Tipo de solicitud:</strong>
-                    <?php echo htmlspecialchars($orden["tipo_solicitud"]); ?>
-                </p>
+                        <p>
+                            <strong>Fecha programada:</strong>
 
-                <p>
-                    <strong>Categoría:</strong>
-                    <?php echo htmlspecialchars($orden["nombre_categoria"]); ?>
-                </p>
-
-                <p>
-                    <strong>Estado:</strong>
-                    <?php echo etiqueta_estado($orden["nombre_estado"]); ?>
-                </p>
-
-                <p>
-                    <strong>Servicio solicitado:</strong><br>
-
-                    <?php
-                    echo nl2br(
-                        htmlspecialchars($orden["servicio_solicitado"])
-                    );
-                    ?>
-                </p>
-
-            </div>
-
-            <!-- DATOS DE CONTACTO Y DOMICILIO DEL CLIENTE. -->
-            <div class="detalle-grupo">
-
-                <h3>Cliente</h3>
-
-                <p>
-                    <strong>Nombre:</strong>
-
-                    <?php
-                    echo htmlspecialchars(
-                        $orden["cliente_nombre"] . " " .
-                        $orden["cliente_apellido"]
-                    );
-                    ?>
-                </p>
-
-                <p>
-                    <strong>Teléfono:</strong>
-                    <?php echo htmlspecialchars($orden["cliente_telefono"]); ?>
-                </p>
-
-                <p>
-                    <strong>Dirección:</strong>
-
-                    <?php
-                    echo !empty($orden["cliente_direccion"])
-                        ? htmlspecialchars($orden["cliente_direccion"])
-                        : "No registrada";
-                    ?>
-                </p>
-
-            </div>
-
-            <!-- FECHAS DE SOLICITUD Y PROGRAMACIÓN DEL SERVICIO. -->
-            <div class="detalle-grupo">
-
-                <h3>Programación</h3>
-
-                <p>
-                    <strong>Fecha de solicitud:</strong>
-
-                    <?php
-                    echo date(
-                        "d/m/Y h:i A",
-                        strtotime($orden["fecha_solicitud"])
-                    );
-                    ?>
-                </p>
-
-                <p>
-                    <strong>Fecha programada:</strong>
-
-                    <?php
-                    if (!empty($orden["fecha_programada"])) {
-
-                        echo date(
-                            "d/m/Y h:i A",
-                            strtotime($orden["fecha_programada"])
-                        );
-
+                            <?php if (!empty($orden['fecha_programada'])) {
+                        echo date('d/m/Y h:i A', strtotime($orden['fecha_programada']));
                     } else {
+                        echo 'Sin programar';
+                    } ?>
+                        </p>
+                    </div>
 
-                        echo "Sin programar";
+                    <!-- OBSERVACIONES REGISTRADAS PARA LA ORDEN. -->
+                    <div class="detalle-grupo">
+                        <h3>Observaciones</h3>
 
-                    }
-                    ?>
-                </p>
-
-            </div>
-
-            <!-- OBSERVACIONES REGISTRADAS PARA LA ORDEN. -->
-            <div class="detalle-grupo">
-
-                <h3>Observaciones</h3>
-
-                <p>
-
-                    <?php
-                    if (!empty($orden["observaciones"])) {
-
-                        echo nl2br(
-                            htmlspecialchars($orden["observaciones"])
-                        );
-
+                        <p>
+                            <?php if (!empty($orden['observaciones'])) {
+                        echo nl2br(htmlspecialchars($orden['observaciones']));
                     } else {
+                        echo 'Sin observaciones.';
+                    } ?>
+                        </p>
+                    </div>
+                </div>
 
-                        echo "Sin observaciones.";
-
-                    }
-                    ?>
-
-                </p>
-
-            </div>
-
+                <?php require __DIR__ . '/../includes/formulario_orden.php'; ?>
+                <?php require __DIR__ . '/../includes/detalle_trabajo.php'; ?>
+                <!-- El historial de movimientos se consulta únicamente desde administración. -->
+            </main>
         </div>
-
-        <?php require __DIR__ . '/../includes/formulario_orden.php'; ?>
-        <?php require __DIR__ . '/../includes/detalle_trabajo.php'; ?>
-        <?php require __DIR__ . '/../includes/historial.php'; ?>
-    </main>
-
-</div>
-
-</body>
+    </body>
 </html>
-
-
-
-
