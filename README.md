@@ -7,7 +7,7 @@ Versión local completada el 29 de octubre de 2026. PHP, MySQL/MariaDB y CSS, ma
 Dirección: http://localhost:8081/sgose/
 Carpeta activa: C:\xampp\htdocs\sgose
 
-Apache usa 8081 y la base original de XAMPP usa 3307, porque otro MySQL ocupa 3306. No se cambió ese otro servicio. Para volver a iniciar SGOSE después de reiniciar Windows, ejecuta desde esta carpeta:
+Apache usa 8081 y la base original de XAMPP usa 3306. El MySQL80 de la práctica está detenido y se inicia manualmente para evitar conflictos de puerto. Para volver a iniciar SGOSE después de reiniciar Windows, ejecuta desde esta carpeta:
 
 ```powershell
 powershell -File .\iniciar-sgose.ps1
@@ -66,4 +66,5 @@ Las pruebas usan registros temporales y los retiran al finalizar. Las órdenes y
 ```
 
 Esta entrega corresponde al sistema local. Publicarlo en internet requiere configurar el servidor y sus credenciales de producción.
+
 

@@ -163,7 +163,7 @@ $orden = $resultado->fetch_assoc();
 
                 <p>
                     <strong>Estado:</strong>
-                    <?php echo htmlspecialchars($orden["nombre_estado"]); ?>
+                    <?php echo etiqueta_estado($orden["nombre_estado"]); ?>
                 </p>
 
                 <p>
@@ -221,7 +221,7 @@ $orden = $resultado->fetch_assoc();
 
                     <?php
                     echo date(
-                        "d/m/Y H:i",
+                        "d/m/Y h:i A",
                         strtotime($orden["fecha_solicitud"])
                     );
                     ?>
@@ -234,7 +234,7 @@ $orden = $resultado->fetch_assoc();
                     if (!empty($orden["fecha_programada"])) {
 
                         echo date(
-                            "d/m/Y H:i",
+                            "d/m/Y h:i A",
                             strtotime($orden["fecha_programada"])
                         );
 
@@ -285,6 +285,7 @@ $orden = $resultado->fetch_assoc();
 
 </body>
 </html>
+
 
 
 

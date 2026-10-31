@@ -149,7 +149,7 @@ require __DIR__ . '/../includes/filtrar_ordenes.php';
                         if (!empty($orden["fecha_programada"])) {
 
                             echo date(
-                                "d/m/Y H:i",
+                                "d/m/Y h:i A",
                                 strtotime($orden["fecha_programada"])
                             );
 
@@ -162,8 +162,8 @@ require __DIR__ . '/../includes/filtrar_ordenes.php';
                     </td>
 
                     <td>
-                        <span class="estado">
-                            <?php echo htmlspecialchars($orden["nombre_estado"]); ?>
+                        <span>
+                            <?php echo etiqueta_estado($orden["nombre_estado"]); ?>
                         </span>
                     </td>
 
@@ -205,5 +205,6 @@ require __DIR__ . '/../includes/filtrar_ordenes.php';
 </body>
 
 </html>
+
 
 

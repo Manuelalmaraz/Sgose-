@@ -198,7 +198,7 @@ require_once __DIR__ . '/../includes/resumen.php';
             </td>
 
             <td>
-                <?php echo htmlspecialchars($orden["nombre_estado"]); ?>
+                <?php echo etiqueta_estado($orden["nombre_estado"]); ?>
             </td>
 
             <td>
@@ -206,7 +206,7 @@ require_once __DIR__ . '/../includes/resumen.php';
                 if (!empty($orden["fecha_programada"])) {
 
                     echo date(
-                        "d/m/Y H:i",
+                        "d/m/Y h:i A",
                         strtotime($orden["fecha_programada"])
                     );
 
@@ -219,7 +219,7 @@ require_once __DIR__ . '/../includes/resumen.php';
             </td>
 
             <td>
-                <a href="ver_orden.php?id=<?php echo $orden["id_orden"]; ?>">
+                <a class="btn" href="ver_orden.php?id=<?php echo $orden["id_orden"]; ?>">
                     Ver
                 </a>
             </td>
@@ -248,5 +248,6 @@ require_once __DIR__ . '/../includes/resumen.php';
 
 </body>
 </html>
+
 
 

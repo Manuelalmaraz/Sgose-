@@ -6,7 +6,7 @@ param(
 $ErrorActionPreference='Stop'
 $base='http://localhost:8081/sgose'
 $mysql='C:\xampp\mysql\bin\mysql.exe'
-function Sql([string]$query) { $r = & $mysql --host=127.0.0.1 --port=3307 -u root -D sgose -N -B -e $query; if ($LASTEXITCODE -ne 0) { throw 'Falló consulta de prueba' }; return $r }
+function Sql([string]$query) { $r = & $mysql --host=127.0.0.1 --port=3306 -u root -D sgose -N -B -e $query; if ($LASTEXITCODE -ne 0) { throw 'Falló consulta de prueba' }; return $r }
 function Check($ok,$message) { if(!$ok){throw $message}; Write-Output "OK: $message" }
 function Page($path,$session) { $r=Invoke-WebRequest "$base/$path" -WebSession $session -UseBasicParsing; Check ($r.Content -notmatch '(?i)Fatal error|Warning:|Uncaught') "Página $path sin errores PHP"; return $r }
 function PostOrder($id,$session,$values) {
@@ -75,6 +75,7 @@ try {
     foreach($id in $created) { $null=Sql "DELETE FROM historial_orden WHERE id_orden=$id; DELETE FROM orden_servicio WHERE id_orden=$id AND servicio_solicitado LIKE 'PRUEBA-SGOSE-%';" }
     Write-Output "Órdenes temporales retiradas: $($created.Count)"
 }
+
 
 
 

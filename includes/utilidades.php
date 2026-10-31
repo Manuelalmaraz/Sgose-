@@ -25,3 +25,9 @@ function cabecera_admin(string $titulo, string $activo): void { ?>
 <main class="contenido"><div class="encabezado"><h1><?= escapar($titulo) ?></h1></div>
 <?php }
 function pie_admin(): void { echo '</main></body></html>'; }
+
+// Etiquetas de estado consistentes; el texto permite distinguirlos también sin colores.
+function etiqueta_estado(string $nombre): string {
+    $colores = ['Solicitada'=>'pendiente','Asignada'=>'pendiente','Aceptada'=>'proceso','En diagnóstico'=>'proceso','En proceso'=>'proceso','Finalizada'=>'finalizada','Rechazada'=>'rechazada','Cancelada'=>'rechazada'];
+    return '<span class="estado '.($colores[$nombre] ?? '').'">'.escapar($nombre).'</span>';
+}

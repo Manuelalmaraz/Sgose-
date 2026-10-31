@@ -96,6 +96,7 @@ $total_clientes = $conexion->query('SELECT COUNT(*) AS total FROM clientes')->fe
 
     </form>
 
+    <?php if (isset($_GET['eliminado'])) { ?><p role="status">Cliente eliminado correctamente.</p><?php } ?>
     <!-- LISTADO DE CLIENTES Y ACCIONES -->
     <div class="tabla-contenedor">
 
@@ -157,6 +158,7 @@ $total_clientes = $conexion->query('SELECT COUNT(*) AS total FROM clientes')->fe
                     <a href="ordenes.php?cliente=<?= (int)$cliente['id_cliente'] ?>" class="btn secundario">
                         Historial
                     </a>
+                    <a href="eliminar_cliente.php?id=<?= (int)$cliente['id_cliente'] ?>" class="btn">Eliminar</a>
                 </td>
             </tr>
 
@@ -172,4 +174,5 @@ $total_clientes = $conexion->query('SELECT COUNT(*) AS total FROM clientes')->fe
 
 </body>
 </html>
+
 

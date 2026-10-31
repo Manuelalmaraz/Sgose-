@@ -15,12 +15,12 @@ function EsperarPuerto([int]$puerto) {
     }
     throw "No se pudo iniciar el servicio del puerto $puerto. Revisa los registros de XAMPP."
 }
-if(!(PuertoDisponible 3307)) {
+if(!(PuertoDisponible 3306)) {
     # Exige acceso exclusivo a InnoDB antes de iniciar: evita instancias con datos compartidos.
     $archivo=[IO.File]::Open('C:\xampp\mysql\data\ibdata1','Open','Read','None')
     $archivo.Dispose()
-    Start-Process -FilePath 'C:\xampp\mysql\bin\mysqld.exe' -ArgumentList '--defaults-file=C:\xampp\mysql\bin\my.ini','--port=3307','--standalone' -WindowStyle Hidden
-    EsperarPuerto 3307
+    Start-Process -FilePath 'C:\xampp\mysql\bin\mysqld.exe' -ArgumentList '--defaults-file=C:\xampp\mysql\bin\my.ini','--port=3306','--standalone' -WindowStyle Hidden
+    EsperarPuerto 3306
 }
 if(!(PuertoDisponible 8081)) {
     Start-Process -FilePath 'C:\xampp\apache\bin\httpd.exe' -WindowStyle Hidden
@@ -28,3 +28,4 @@ if(!(PuertoDisponible 8081)) {
 }
 Write-Output 'SGOSE disponible en http://localhost:8081/sgose/'
 if(!$SinNavegador) { Start-Process 'http://localhost:8081/sgose/' }
+

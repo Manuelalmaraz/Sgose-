@@ -2,7 +2,7 @@ param([Parameter(Mandatory)][string]$AdminPassword)
 # Verifica eliminación usando una cuenta y una orden creadas solo para esta prueba.
 $ErrorActionPreference='Stop'
 $base='http://localhost:8081/sgose'
-function Sql($q) { $r=& C:\xampp\mysql\bin\mysql.exe --host=127.0.0.1 --port=3307 -u root -D sgose -N -B -e $q; if($LASTEXITCODE){throw 'Error SQL de prueba'}; return $r }
+function Sql($q) { $r=& C:\xampp\mysql\bin\mysql.exe --host=127.0.0.1 --port=3306 -u root -D sgose -N -B -e $q; if($LASTEXITCODE){throw 'Error SQL de prueba'}; return $r }
 function Check($ok,$msg){if(!$ok){throw $msg}; Write-Output "OK: $msg"}
 $session=New-Object Microsoft.PowerShell.Commands.WebRequestSession
 $null=Invoke-WebRequest "$base/controllers/login.php" -WebSession $session -Method Post -Body @{correo='admin@sgose.com';password=$AdminPassword} -UseBasicParsing
@@ -36,3 +36,4 @@ try {
     if($orderId){$null=Sql "DELETE FROM historial_orden WHERE id_orden=$orderId; DELETE FROM orden_servicio WHERE id_orden=$orderId AND servicio_solicitado='PRUEBA-ELIMINAR';"}
     if($id){$null=Sql "DELETE FROM usuarios WHERE id_usuario=$id AND correo='$email';"}
 }
+

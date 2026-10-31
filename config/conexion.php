@@ -13,7 +13,7 @@ $conexion = new mysqli(
     $usuario,
     $password,
     $base_datos,
-    (int) (getenv('SGOSE_DB_PORT') ?: 3307)
+    (int) (getenv('SGOSE_DB_PORT') ?: 3306)
 );
 
 if ($conexion->connect_error) {
@@ -24,4 +24,5 @@ $conexion->set_charset("utf8mb4");
 $conexion->query("SET time_zone = '-06:00'");
 
 ?>
+
 
