@@ -126,6 +126,7 @@ $orden = $resultado->fetch_assoc();
                 <?php if ( !in_array((int) $orden['id_estado'], [7, 8], true) ) { ?>
                 <a class="btn" href="editar_orden.php?id=<?= $id_orden ?>">Editar orden</a>
                 <?php } ?>
+                <a class="btn" href="eliminar_orden.php?id=<?= $id_orden ?>">Eliminar orden</a>
                 <div class="detalle-orden">
                     <!-- DATOS DEL SERVICIO, SU CATEGORÍA, ESTADO Y DESCRIPCIÓN. -->
                     <div class="detalle-grupo">
@@ -222,3 +223,4 @@ $orden = $resultado->fetch_assoc();
         </div>
     </body>
 </html>
+

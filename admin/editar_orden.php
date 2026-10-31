@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Recoge los campos editables y valida sus tamaños.
         $servicio = campo_texto('servicio_solicitado', 255, true);
         $observaciones = campo_texto('observaciones', 10000);
+        $precio = validar_precio_servicio($_POST['costo_servicio'] ?? $orden['costo_servicio']);
         $categoria = (int) ($_POST['id_categoria'] ?? 0);
         $tecnico = (int) ($_POST['id_tecnico'] ?? 0);
         // Misma entrada de hora escrita en formato AM/PM que Nueva orden.
@@ -113,14 +114,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'id_categoria' => $categoria,
             'id_tecnico' => $tecnico,
             'fecha_programada' => $fecha,
-            'observaciones' => $observaciones
+            'observaciones' => $observaciones,
+            'costo_servicio' => $precio
         ];
         $etiquetas = [
             'servicio_solicitado' => 'Servicio solicitado',
             'id_categoria' => 'Categoría (ID)',
             'id_tecnico' => 'Técnico (ID)',
             'fecha_programada' => 'Fecha programada',
-            'observaciones' => 'Observaciones'
+            'observaciones' => 'Observaciones',
+            'costo_servicio' => 'Precio del servicio (Q)'
         ];
         $nota = 'Orden editada por el administrador.';
         $cambios = 0;
@@ -146,16 +149,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  id_tecnico = ?,
                  fecha_programada = ?,
                  observaciones = ?,
+                 costo_servicio = ?,
                  id_estado = ?
              WHERE id_orden = ?'
         );
         $stmt->bind_param(
-            'siissii',
+            'siisssii',
             $servicio,
             $categoria,
             $tecnico,
             $fecha,
             $observaciones,
+            $precio,
             $nuevo,
             $id
         );
@@ -295,6 +300,13 @@ cabecera_admin('Editar orden ' . $orden['numero_orden'], 'ordenes');
 <?= escapar($observaciones_formulario) ?></textarea>
         </div>
 
+<!-- Importe total del servicio en quetzales, sin modificar el cálculo de otros campos. -->
+<div class="grupo-formulario">
+    <label for="costo_servicio">Precio del servicio (Q)</label>
+    <input type="number" id="costo_servicio" name="costo_servicio"
+        min="0" max="99999999.99" step="0.01" placeholder="Pendiente"
+        value="<?= escapar($_POST['costo_servicio'] ?? $orden['costo_servicio'] ?? '') ?>">
+</div>
         <div class="acciones-formulario">
             <button class="btn-principal">Guardar cambios</button>
             <a class="btn secundario" href="ordenes.php">Cancelar</a>
@@ -305,4 +317,5 @@ cabecera_admin('Editar orden ' . $orden['numero_orden'], 'ordenes');
 </div>
 
 <?php pie_admin(); ?>
+
 

@@ -3,6 +3,10 @@
 ?>
 <div class="detalle-grupo">
     <h3>Trabajo registrado</h3>
+    <p>
+        <strong>Precio del servicio:</strong>
+        <?= $orden['costo_servicio'] === null ? 'Precio pendiente' : 'Q ' . number_format((float) $orden['costo_servicio'], 2) ?>
+    </p>
     <?php foreach (
     [
         'diagnostico' => 'Diagnóstico',

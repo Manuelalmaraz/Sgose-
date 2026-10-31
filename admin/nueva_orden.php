@@ -202,6 +202,13 @@ if (
                             <textarea name="observaciones" rows="3"><?= escapar($_POST['observaciones'] ?? '') ?></textarea>
                         </div>
 
+<!-- Importe total del servicio en quetzales, sin modificar el cálculo de otros campos. -->
+<div class="grupo-formulario">
+    <label for="costo_servicio">Precio del servicio (Q)</label>
+    <input type="number" id="costo_servicio" name="costo_servicio"
+        min="0" max="99999999.99" step="0.01" placeholder="Pendiente"
+        value="<?= escapar($_POST['costo_servicio'] ?? $orden['costo_servicio'] ?? '') ?>">
+</div>
                         <!-- PERMITE CANCELAR EL REGISTRO O ENVIAR EL FORMULARIO. -->
                         <div class="acciones-formulario">
                             <a href="ordenes.php" class="btn-secundario">Cancelar</a>
@@ -214,3 +221,4 @@ if (
         </div>
     </body>
 </html>
+

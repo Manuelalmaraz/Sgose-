@@ -12,7 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         require_once __DIR__ . '/../includes/ordenes.php';
         try {
             actualizar_orden($conexion, $id_orden, (int) $id_tecnico, $_POST);
-            header('Location: ver_orden.php?id=' . $id_orden . '&mensaje=guardada');
+            // Al cerrar regresa al listado; los avances permanecen en el formulario.
+            if (($_POST['accion'] ?? '') === 'finalizar') {
+                header('Location: ordenes.php?mensaje=finalizada');
+            } else {
+                header('Location: ver_orden.php?id=' . $id_orden . '&mensaje=guardada#editar-orden');
+            }
             exit();
         } catch (DomainException $e) {
             $error = $e->getMessage();

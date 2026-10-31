@@ -50,7 +50,7 @@ try {
             Check ((Sql "SELECT COUNT(*) FROM historial_orden WHERE id_orden=$id") -eq 2) 'Envío repetido bloqueado sin duplicar historial'
             $r=PostOrder $id $tecnico @{accion='finalizar';id_estado=3;diagnostico='';trabajo_realizado=''}
             Check ((Sql "SELECT id_estado FROM orden_servicio WHERE id_orden=$id") -eq 3) 'Finalización incompleta bloqueada'
-            $r=PostOrder $id $tecnico @{accion='guardar';id_estado=5;diagnostico='Diagnóstico de prueba';trabajo_realizado='';materiales_utilizados='Sin materiales';observaciones='Prueba <script>alert(1)</script>'}
+            $r=PostOrder $id $tecnico @{accion='guardar';id_estado=5;diagnostico='Diagnóstico <script>alert(1)</script>';trabajo_realizado='';materiales_utilizados='Sin materiales';observaciones='No debe cambiar'}
             Check ((Sql "SELECT id_estado FROM orden_servicio WHERE id_orden=$id") -eq 5) 'Guardar diagnóstico'
             Check ($r.Content -match '&lt;script&gt;') 'Texto escapado en pantalla'
             $r=PostOrder $id $tecnico @{accion='guardar';id_estado=6;diagnostico='Diagnóstico de prueba';trabajo_realizado='Reparación de prueba';materiales_utilizados='Cable de prueba';observaciones='Prueba'}
@@ -75,6 +75,7 @@ try {
     foreach($id in $created) { $null=Sql "DELETE FROM historial_orden WHERE id_orden=$id; DELETE FROM orden_servicio WHERE id_orden=$id AND servicio_solicitado LIKE 'PRUEBA-SGOSE-%';" }
     Write-Output "Órdenes temporales retiradas: $($created.Count)"
 }
+
 
 
 

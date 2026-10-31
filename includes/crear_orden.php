@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tipo_solicitud = campo_texto('tipo_solicitud', 20, true);
         $servicio_solicitado = campo_texto('servicio_solicitado', 255, true);
         $observaciones = campo_texto('observaciones', 10000);
+        $precio = validar_precio_servicio($_POST['costo_servicio'] ?? '');
         if (!in_array($tipo_solicitud, ['Servicio', 'Presupuesto'], true)) {
             throw new DomainException('Selecciona un tipo de solicitud válido.');
         }
@@ -69,10 +70,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $numero_orden = 'OS-' . date('ymdHis') . '-' . bin2hex(random_bytes(2));
         $id_estado = 2;
         $stmt = $conexion->prepare(
-            'INSERT INTO orden_servicio(numero_orden,id_cliente,id_categoria,id_tecnico,id_estado,tipo_solicitud,servicio_solicitado,fecha_programada,observaciones) VALUES(?,?,?,?,?,?,?,?,?)'
+            'INSERT INTO orden_servicio(numero_orden,id_cliente,id_categoria,id_tecnico,id_estado,tipo_solicitud,servicio_solicitado,fecha_programada,observaciones,costo_servicio) VALUES(?,?,?,?,?,?,?,?,?,?)'
         );
         $stmt->bind_param(
-            'siiiissss',
+            'siiiisssss',
             $numero_orden,
             $id_cliente,
             $id_categoria,
@@ -81,12 +82,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tipo_solicitud,
             $servicio_solicitado,
             $fecha_programada,
-            $observaciones
+            $observaciones,
+            $precio
         );
         $stmt->execute();
         $id_orden = $stmt->insert_id;
         $id_usuario = (int) $_SESSION['id_usuario'];
         $nota = 'Orden creada y asignada al técnico ID ' . $id_tecnico . '.';
+        $nota .= ' Precio del servicio: ' . ($precio === null ? 'pendiente.' : 'Q ' . $precio . '.');
         $stmt = $conexion->prepare(
             'INSERT INTO historial_orden(id_orden,id_usuario,id_estado_anterior,id_estado_nuevo,observacion) VALUES(?,?,NULL,?,?)'
         );

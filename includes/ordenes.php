@@ -46,7 +46,12 @@ function actualizar_orden(mysqli $conexion, int $id_orden, int $id_tecnico, arra
             $diagnostico = trim($datos['diagnostico'] ?? '');
             $trabajo = trim($datos['trabajo_realizado'] ?? '');
             $materiales = trim($datos['materiales_utilizados'] ?? '');
-            $observaciones = trim($datos['observaciones'] ?? '');
+            // Las observaciones son del administrador; el técnico no las modifica.
+            // El técnico registra el precio pendiente; solo el administrador cambia uno ya guardado.
+            $precio = validar_precio_servicio($datos['costo_servicio'] ?? $orden['costo_servicio']);
+            if ($orden['costo_servicio'] !== null && $precio !== $orden['costo_servicio']) {
+                throw new DomainException('Solo el administrador puede modificar el precio ya registrado.');
+            }
             $nuevo = (int) ($datos['id_estado'] ?? $anterior);
             $permitidos = [3 => [3, 5, 6], 5 => [5, 6], 6 => [6]];
             if (!in_array($nuevo, $permitidos[$anterior], true)) {
@@ -67,13 +72,13 @@ function actualizar_orden(mysqli $conexion, int $id_orden, int $id_tecnico, arra
                 $diagnostico === (string) $orden['diagnostico'] &&
                 $trabajo === (string) $orden['trabajo_realizado'] &&
                 $materiales === (string) $orden['materiales_utilizados'] &&
-                $observaciones === (string) $orden['observaciones']
+                $precio === $orden['costo_servicio']
             ) {
                 throw new DomainException('No hay cambios para guardar.');
             }
             $stmt = $conexion->prepare(
                 'UPDATE orden_servicio
-             SET id_estado=?, diagnostico=?, trabajo_realizado=?, materiales_utilizados=?, observaciones=?, fecha_finalizacion=?
+             SET id_estado=?, diagnostico=?, trabajo_realizado=?, materiales_utilizados=?, costo_servicio=?, fecha_finalizacion=?
              WHERE id_orden=?'
             );
             $stmt->bind_param(
@@ -82,18 +87,21 @@ function actualizar_orden(mysqli $conexion, int $id_orden, int $id_tecnico, arra
                 $diagnostico,
                 $trabajo,
                 $materiales,
-                $observaciones,
+                $precio,
                 $fecha,
                 $id_orden
             );
             $nota =
                 $accion === 'finalizar' ? 'Orden finalizada.' : 'Avance del servicio actualizado.';
+            if ($precio !== $orden['costo_servicio']) {
+                $nota .= "\nPrecio del servicio: " . ($orden['costo_servicio'] === null ? 'pendiente' : 'Q ' . $orden['costo_servicio']);
+                $nota .= ' → ' . ($precio === null ? 'pendiente' : 'Q ' . $precio);
+            }
             foreach (
                 [
                     'diagnostico' => 'Diagnóstico',
                     'trabajo_realizado' => 'Trabajo realizado',
-                    'materiales_utilizados' => 'Materiales',
-                    'observaciones' => 'Observaciones'
+                    'materiales_utilizados' => 'Materiales'
                 ]
                 as $campo => $etiqueta
             ) {

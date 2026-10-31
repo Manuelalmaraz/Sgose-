@@ -21,7 +21,7 @@ require_once '../config/conexion.php';
 $id_tecnico = $_SESSION['id_usuario'];
 
 $sql = "SELECT
-            o.id_orden, o.id_estado,
+            o.id_orden, o.costo_servicio, o.id_estado,
             o.numero_orden,
             o.tipo_solicitud,
             o.servicio_solicitado,
@@ -88,7 +88,12 @@ require __DIR__ . '/../includes/filtrar_ordenes.php';
             </div>
 
             <?php require __DIR__ . '/../includes/formulario_filtros.php'; ?>
-            <!-- TABLA DE ÓRDENES ASIGNADAS AL TECNICO. -->
+            <?php if (($_GET['mensaje'] ?? '') === 'finalizada') { ?>
+    <div class="detalle-grupo" role="status">
+        <strong>Orden finalizada correctamente.</strong> El servicio quedó cerrado.
+    </div>
+<?php } ?>
+<!-- TABLA DE ÓRDENES ASIGNADAS AL TECNICO. -->
             <div class="tabla-contenedor">
                 <table>
                     <!-- TÍTULOS DE LAS COLUMNAS. -->
@@ -99,7 +104,8 @@ require __DIR__ . '/../includes/filtrar_ordenes.php';
                             <th>Servicio</th>
                             <th>Fecha</th>
                             <th>Estado</th>
-                            <th>Acciones</th>
+                            <th>Precio</th>
+<th>Acciones</th>
                         </tr>
                     </thead>
 
@@ -138,7 +144,8 @@ require __DIR__ . '/../includes/filtrar_ordenes.php';
                                 </span>
                             </td>
 
-                            <td>
+                            <td><?= $orden['costo_servicio'] === null ? 'Pendiente' : 'Q ' . number_format((float) $orden['costo_servicio'], 2) ?></td>
+<td>
                                 <a href="ver_orden.php?id=<?php echo $orden['id_orden']; ?>" class="btn">Ver detalle</a>
                                 <!-- La edición utiliza el detalle autorizado y su historial existente. -->
                                 <?php if (in_array((int) $orden['id_estado'], [3, 5, 6], true)) { ?>
@@ -154,7 +161,7 @@ require __DIR__ . '/../includes/filtrar_ordenes.php';
                         <?php } else { ?>
 
                         <tr>
-                            <td colspan="6">No tienes órdenes asignadas.</td>
+                            <td colspan="7">No tienes órdenes asignadas.</td>
                         </tr>
 
                         <?php } ?>
@@ -164,3 +171,5 @@ require __DIR__ . '/../includes/filtrar_ordenes.php';
         </div>
     </body>
 </html>
+
+

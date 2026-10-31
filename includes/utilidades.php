@@ -1,6 +1,25 @@
 <?php
 // Utilidades compartidas: escape de salida y protección de formularios de SGOSE.
 // Evita que los textos de la base de datos se interpreten como etiquetas HTML.
+// Valida el importe sin redondear: admite cero y hasta dos decimales.
+// Un campo vacío significa pendiente; es distinto de un servicio gratuito (0.00).
+function validar_precio_servicio($valor): ?string
+{
+    if (!is_scalar($valor) && $valor !== null) {
+        throw new DomainException('Escribe un precio válido.');
+    }
+    $texto = trim((string) $valor);
+    if ($texto === '') {
+        return null;
+    }
+    if (!preg_match('/^[0-9]{1,8}(\.[0-9]{1,2})?$/D', $texto)) {
+        throw new DomainException('El precio debe ser de 0 a 99999999.99, con un máximo de dos decimales.');
+    }
+    $partes = explode('.', $texto);
+    return (string) ((int) $partes[0]) . '.' . str_pad($partes[1] ?? '', 2, '0');
+}
+
+// Evita que los textos de la base de datos se interpreten como etiquetas HTML.
 function escapar($valor): string
 {
     return htmlspecialchars((string) ($valor ?? ''), ENT_QUOTES, 'UTF-8');
@@ -95,5 +114,6 @@ function etiqueta_estado(string $nombre): string
     ];
     return '<span class="estado ' . ($colores[$nombre] ?? '') . '">' . escapar($nombre) . '</span>';
 }
+
 
 

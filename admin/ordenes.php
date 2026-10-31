@@ -18,7 +18,7 @@ require_once '../config/conexion.php';
 
 // CONSULTA DE ÓRDENES
 $sql = "SELECT
-            o.id_orden, o.id_estado,
+            o.id_orden, o.costo_servicio, o.id_estado,
             o.numero_orden,
             o.tipo_solicitud,
             o.servicio_solicitado,
@@ -111,6 +111,7 @@ require_once __DIR__ . '/../includes/resumen.php';
 
             <?php require __DIR__ . '/../includes/formulario_filtros.php'; ?>
             <!-- TABLA DE ÓRDENES Y ACCIONES -->
+<?php if (($_GET['mensaje'] ?? '') === 'eliminada') { ?><p role="status">Orden eliminada correctamente.</p><?php } ?>
             <div class="tabla-contenedor">
                 <table>
                     <thead>
@@ -123,7 +124,8 @@ require_once __DIR__ . '/../includes/resumen.php';
                             <th>Técnico</th>
                             <th>Estado</th>
                             <th>Fecha programada</th>
-                            <th>Acciones</th>
+                            <th>Precio</th>
+<th>Acciones</th>
                         </tr>
                     </thead>
 
@@ -177,8 +179,10 @@ require_once __DIR__ . '/../includes/resumen.php';
                 } ?>
                             </td>
 
-                            <td>
+                            <td><?= $orden['costo_servicio'] === null ? 'Pendiente' : 'Q ' . number_format((float) $orden['costo_servicio'], 2) ?></td>
+<td>
                                 <a class="btn" href="ver_orden.php?id=<?php echo $orden['id_orden']; ?>">Ver</a>
+                                <a class="btn" href="eliminar_orden.php?id=<?= (int)$orden['id_orden'] ?>">Eliminar</a>
                                 <?php if ( !in_array((int) $orden['id_estado'], [7, 8], true) ) { ?>
                                 <a class="btn" href="editar_orden.php?id=<?= (int) $orden['id_orden'] ?>">Editar</a>
                                 <?php } ?>
@@ -190,7 +194,7 @@ require_once __DIR__ . '/../includes/resumen.php';
                         <?php } else { ?>
 
                         <tr>
-                            <td colspan="9">No hay órdenes registradas.</td>
+                            <td colspan="10">No hay órdenes registradas.</td>
                         </tr>
 
                         <?php } ?>
@@ -200,3 +204,6 @@ require_once __DIR__ . '/../includes/resumen.php';
         </div>
     </body>
 </html>
+
+
+

@@ -33,3 +33,12 @@
 .detalle-grupo table {
     margin-top: 15px;
 }
+
+/* Precio editable dentro del formulario técnico, con el mismo ancho que sus campos. */
+.detalle-grupo .grupo-formulario input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font: inherit;
+}
